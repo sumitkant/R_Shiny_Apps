@@ -1,0 +1,64 @@
+/*changes title slide font properties*/
+.title-slide hgroup h1 {
+    font-size: 60px;
+}
+
+/*title slide logo formatiing*/
+slide.title-slide {
+    background: #ffffff url(images/cropped-logo-no-border.png) no-repeat;
+    background-size: 15%;
+    background-position: 0px 200px;
+    background-origin: content-box;
+}
+
+/*changes slide background properties*/
+slide{
+    background: #ffffff ;
+}
+
+/*controls font size within each slide*/
+slides > slide > hgroup + article p{
+    font-size: 0.7em;
+}
+
+/*margin below each header in slide*/
+slides > slide > hgroup + article{
+    margin-top: 25px;
+}
+
+/*preformatted content properties*/
+pre.prettyprint{
+    font-size: 0.5em;
+    letter-spacing: 0.02em;
+    line-height: 1.5em;
+    font-family: "Monaco";
+    left:0px;
+    width:100%;
+    padding: 10px 10px 10px 10px;
+    border-radius: 5px;
+}
+
+/*logo top right side of each slide*/
+slides > slide > hgroup > h2 {
+    background: #ffffff url(images/cropped-logo-no-border.png) no-repeat;
+    background-position: right;
+    background-size: 5%;
+}
+
+h1{
+    font-size: 1.6em;
+    font-weight: 900;
+}
+
+h2{
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+
+/*border controls around plotly graphs*/
+div.svg-container{
+    border: 2px solid #e6e6e6;
+    border-radius: 5px;
+}
+

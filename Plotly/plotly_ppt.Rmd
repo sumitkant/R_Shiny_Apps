@@ -1,0 +1,172 @@
+---
+title: "plotly"
+author: "Sumit Kant"
+date: "15 September 2018"
+output:
+  ioslides_presentation:
+    css: custom_style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## What is plotly
+
+Plotly is a web application for creating and sharing data
+visualizations. Plotly can work with several programming languages
+and applications including R, Python, and Microsoft Excel. We're
+going to concentrate on creating different graphs with Plotly and
+sharing those graphs.
+
+#### Installing Plotly
+
+```{r, echo=FALSE, message=FALSE}
+# install.packages("plotly")
+library(plotly)
+```
+If you want to share your visualizations on https://plot.ly/ you
+should make an account on their site
+
+
+## Basic Scatterplot
+
+```{r cars, echo = TRUE, message=FALSE}
+library(plotly)
+plot_ly(mtcars, x = ~wt, y = ~mpg, type="scatter", height=380, width=776)
+```
+
+## Scatterplot with color
+Higher cylinder counts have higher weight and generaly low miles per gallon
+```{r, message=FALSE, echo=TRUE}
+plot_ly(mtcars, x = ~wt, y = ~mpg, type = "scatter", color = ~factor(cyl),
+        height = 360, width = 776)
+```
+
+## Scatterplot - Continuous color
+Coloring the scatterplot with displacement as the continous variable.
+As shown in the graph, lower disp values tends to have higher miles per gallon and lower weight.
+```{r, message=FALSE, echo=T, warning=FALSE}
+plot_ly(mtcars, x = ~wt, y = ~mpg, mode = "markers", color = ~disp,
+        height = 350, width = 776)
+```
+
+## Scatterplot - Sizing
+Coloring the scatterplot with displacement as the continous variable.
+As shown in the graph, lower disp values tends to have higher miles per gallon and lower weight.
+```{r, message=FALSE, echo=T, warning=FALSE}
+plot_ly(mtcars, x = ~wt, y = ~mpg, mode = "markers", size = ~hp,
+        color = ~factor(cyl), height = 350, width = 776)
+```
+
+## 3D Scatterplot
+
+```{r, message=FALSE, echo=T, warning=FALSE}
+set.seed(2016-07-21)
+temp <- rnorm(100, mean=30, sd =5)
+pressue <- rnorm(100)
+dtime <- 1:100
+plot_ly(x = temp, y = pressue, z = dtime, type="scatter3d", 
+        mode = "markers",color = temp, width = 776, height=350)
+```
+
+## Line Graph 
+
+The default graph in plotly is a Line Chart. E.g.: Plotting miles travelled over the years in air with airmiles dataset
+
+```{r, message=FALSE, echo=T, warning=FALSE}
+data("airmiles")
+plot_ly(x = time(airmiles), y = airmiles, mode="lines",
+        width = 776, height=350)
+```
+
+## Multi-line Graph
+Stock market data representation is the most common form of multi-line graphs
+```{r, message=FALSE, echo=T, warning=FALSE}
+library(tidyr)
+library(dplyr)
+data("EuStockMarkets")
+stocks <- as.data.frame(EuStockMarkets) %>%
+  gather(index, price) %>%
+  mutate(time = rep(time(EuStockMarkets), 4))
+plot_ly(stocks, x = ~time, y = ~price, color = ~index, type = "scatter", 
+        mode = "lines", width = 776, height=280)
+```
+
+
+## Histogram
+Requires one variable to visualize histogram
+```{r, message=FALSE, echo=T, warning=FALSE}
+data("iris")
+plot_ly(x = iris$Sepal.Length, type = 'histogram',
+        width = 776, height=370)
+```
+
+## Boxplot
+```{r, message=FALSE, echo=T, warning=FALSE}
+plot_ly(iris, y = ~Petal.Length, color = ~Species, type = 'box',
+        width = 776, height=410)
+```
+
+
+## HeatMap
+Plotly takes a matrix as an input and produces a raster image for heatmap
+```{r, message=FALSE, echo=T, warning=FALSE}
+terrain <- matrix(rnorm(100*100), nrow= 100, ncol=100)
+plot_ly(z = terrain, type = 'heatmap', width = 776, height=370)
+```
+
+## 3D Surface
+Same as heatmap, only type="surface"
+```{r, message=FALSE, echo=T, warning=FALSE}
+terrain <- matrix(sort(rnorm(100*100)), nrow= 100, ncol=100)
+plot_ly(z = terrain, type = 'surface', width = 776, height=370)
+```
+
+## Chloropeth Maps (1/2)
+Choropleth maps illustrate data across geographic areas by shading regions with different colors. Choropleth maps are easy to make with Plotly though they require more setup compared to other Plotly graphics.
+```{r, message=FALSE, echo=T, warning=FALSE, eval =F}
+# Create data frame
+state_pop <- data.frame(State = state.abb, Pop = as.vector(state.x77[,1]))
+# Create hover text
+state_pop$hover <- with(state_pop, paste(State, '<br>', "Population:", Pop))
+# Make state borders white
+borders <- list(color = toRGB("red"))
+# Set up some mapping options
+map_options <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white'))
+# Plot
+plot_ly(z = ~state_pop$Pop, text = ~state_pop$hover, 
+        locations = ~state_pop$State, type = 'choropleth', 
+        locationmode = 'USA-states', color = state_pop$Pop, 
+        colors = 'Blues', marker = list(line = borders), 
+        width =776, height=480) %>%
+  layout(title = 'US Population in 1975', geo = map_options)
+```
+
+## Chloropleth Maps (2/2)
+```{r, message=FALSE, echo=F, warning=FALSE}
+# Create data frame
+state_pop <- data.frame(State = state.abb, Pop = as.vector(state.x77[,1]))
+# Create hover text
+state_pop$hover <- with(state_pop, paste(State, '<br>', "Population:", Pop))
+# Make state borders white
+borders <- list(color = toRGB("red"))
+# Set up some mapping options
+map_options <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+plot_ly(z = ~state_pop$Pop, text = ~state_pop$hover, locations = ~state_pop$State,
+        type = 'choropleth', locationmode = 'USA-states', color = state_pop$Pop, 
+        colors = 'Blues', marker = list(line = borders), width =776, height=480) %>%
+  layout(title = 'US Population in 1975', geo = map_options)
+
+```
+
+## ggplot to Plotly
